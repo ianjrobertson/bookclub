@@ -16,7 +16,7 @@ async function ErrorContent({
         </p>
       ) : (
         <p className="text-sm text-muted-foreground">
-          An unspecified error occurred.
+          Try getting an invite link from your friend!
         </p>
       )}
     </>

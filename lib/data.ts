@@ -1,16 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
+import type { Tables } from "@/database.types";
 
-export type Board = { id: string; name: string; created_at: string };
-export type Discussion = { id: string; board_id: string; title: string; created_at: string };
-export type Post = {
-  id: string;
-  discussion_id: string;
-  parent_id: string | null;
-  content: string;
-  user_handle: string;
-  user_id: string;
-  created_at: string;
-};
+export type Board = Tables<"boards">;
+export type Discussion = Tables<"discussions">;
+export type Post = Tables<"posts">;
 export type PostNode = Post & { children: PostNode[] };
 
 export async function getBoards(): Promise<Board[]> {
@@ -18,6 +11,13 @@ export async function getBoards(): Promise<Board[]> {
   const { data, error } = await supabase.from("boards").select("*").order("created_at");
   if (error) throw new Error(error.message);
   return data ?? [];
+}
+
+export async function getBoard(boardId: string): Promise<Board> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("boards").select('*').eq('id', boardId).single();
+  if (error) throw new Error(error.message);
+  return data;
 }
 
 export async function getDiscussions(boardId: string): Promise<Discussion[]> {
@@ -29,6 +29,13 @@ export async function getDiscussions(boardId: string): Promise<Discussion[]> {
     .order("created_at");
   if (error) throw new Error(error.message);
   return data ?? [];
+}
+
+export async function getDicussion(discussionId: string): Promise<Discussion> {
+  const supabase = await createClient();
+  const {data, error} = await supabase.from("discussions").select("*").eq('id', discussionId).single();
+  if (error) throw new Error(error.message);
+  return data;
 }
 
 export async function getPosts(discussionId: string): Promise<PostNode[]> {

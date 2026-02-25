@@ -16,14 +16,23 @@ export async function createPost(
 ) {
   const cookieStore = await cookies();
   const cookie = cookieStore.get(COOKIE_NAME);
-  if (!cookie) redirect("/auth/error");
 
-  let session: { handle: string; user_id: string };
-  try {
-    const { payload } = await jwtVerify(cookie.value, secret());
-    session = payload as typeof session;
-  } catch {
-    redirect("/auth/error");
+  let handle: string;
+  let user_id: string;
+
+  if (cookie) {
+    try {
+      const { payload } = await jwtVerify(cookie.value, secret());
+      ({ handle, user_id } = payload as { handle: string; user_id: string });
+    } catch {
+      redirect("/auth/error");
+    }
+  } else {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) redirect("/auth/error");
+    handle = user.email!;
+    user_id = user.id;
   }
 
   const content = (formData.get("content") as string)?.trim();
@@ -34,8 +43,8 @@ export async function createPost(
     discussion_id: discussionId,
     parent_id: parentId,
     content,
-    user_handle: session.handle,
-    user_id: session.user_id,
+    user_handle: handle,
+    user_id,
   });
   if (error) throw new Error(error.message);
 

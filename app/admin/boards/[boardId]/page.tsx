@@ -1,9 +1,8 @@
 export const dynamic = "force-dynamic";
 
-
 import Link from "next/link";
 import { headers } from "next/headers";
-import { getDiscussions } from "@/lib/data";
+import { getBoard, getDiscussions } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { generateInviteLink } from "@/app/admin/actions";
 import { CopyInviteButton } from "./copy-invite-button";
@@ -18,6 +17,7 @@ export default async function BoardAdminPage({
   const { boardId } = await params;
   const { invite } = await searchParams;
   const discussions = await getDiscussions(boardId);
+  const board = await getBoard(boardId);
 
   const headersList = await headers();
   const host = headersList.get("host") ?? "localhost:3000";
@@ -26,13 +26,12 @@ export default async function BoardAdminPage({
 
   return (
     <div className="max-w-2xl space-y-8">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-medium">Board</h2>
-        <Link href="/admin" className="text-sm underline underline-offset-4">
+      <Link href="/admin" className="text-sm underline underline-offset-4">
           ← All boards
         </Link>
+      <div className="flex flex-col space-y-2">
+        <h2 className="text-lg font-medium">Board: {board.name}</h2>
       </div>
-
       <section className="space-y-4">
         <h3 className="font-medium">Invite link</h3>
         <div className="flex items-center gap-3">
