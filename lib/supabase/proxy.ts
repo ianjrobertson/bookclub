@@ -18,27 +18,9 @@ function isMemberRoute(pathname: string): boolean {
 
 
 export async function updateSession(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-
-  // Member routes: check book_club_session cookie
-  if (isMemberRoute(pathname)) {
-    const session = await getMemberSession(request);
-    if (!session) {
-      const url = request.nextUrl.clone();
-      url.pathname = "/auth/error";
-      return NextResponse.redirect(url);
-    }
-    return NextResponse.next({ request });
-  }
-
-  // Public routes: always allow through
-  if (isPublic(pathname)) {
-    return NextResponse.next({ request });
-  }
-
-  // Admin routes (and everything else): check Supabase session
   let supabaseResponse = NextResponse.next({ request });
 
+  // IMPORTANT: Do not run code between createServerClient and getClaims().
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
@@ -60,10 +42,31 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  // IMPORTANT: Do not run code between createServerClient and getClaims().
   const { data } = await supabase.auth.getClaims();
   const user = data?.claims;
+  const { pathname } = request.nextUrl;
 
+  // Member routes: check book_club_session cookie
+  if (isMemberRoute(pathname)) {
+    const session = await getMemberSession(request);
+    if (!session) {
+      if (!user) {
+        const url = request.nextUrl.clone();
+        url.pathname = "/auth/error";
+        return NextResponse.redirect(url);
+      } else {
+        return supabaseResponse;
+      }
+    }
+    return NextResponse.next({ request });
+  }
+
+  // Public routes: always allow through
+  if (isPublic(pathname)) {
+    return NextResponse.next({ request });
+  }
+
+  // Admin routes (and everything else): check Supabase session
   if (!user) {
     const url = request.nextUrl.clone();
     url.pathname = "/auth/login";
