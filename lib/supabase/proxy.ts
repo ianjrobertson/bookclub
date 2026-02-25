@@ -18,9 +18,6 @@ function isMemberRoute(pathname: string): boolean {
 
 
 export async function updateSession(request: NextRequest) {
-  // TODO: remove before launch — bypasses all auth for local testing
-  return NextResponse.next({ request });
-
   const { pathname } = request.nextUrl;
 
   // Member routes: check book_club_session cookie
