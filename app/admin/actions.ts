@@ -18,12 +18,24 @@ export async function createBoard(formData: FormData) {
 
 export async function createDiscussion(boardId: string, formData: FormData) {
   const title = formData.get("title") as string;
+  const description = (formData.get("description") as string) || null;
   const supabase = await createClient();
   const { error } = await supabase
     .from("discussions")
-    .insert({ board_id: boardId, title })
+    .insert({ board_id: boardId, title, description })
     .select()
     .single();
+  if (error) throw new Error(error.message);
+  redirect(`/admin/boards/${boardId}`);
+}
+
+export async function updateDiscussion(discussionId: string, boardId: string, formData: FormData) {
+  const description = (formData.get("description") as string) || null;
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("discussions")
+    .update({ description })
+    .eq("id", discussionId);
   if (error) throw new Error(error.message);
   redirect(`/admin/boards/${boardId}`);
 }

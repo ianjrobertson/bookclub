@@ -61,12 +61,18 @@ export default async function BoardAdminPage({
         ) : (
           <ul className="space-y-2">
             {discussions.map((d) => (
-              <li key={d.id}>
+              <li key={d.id} className="flex items-center gap-3">
                 <Link
                   href={`/board/${boardId}/discussion/${d.id}`}
                   className="text-sm underline underline-offset-4"
                 >
                   {d.title}
+                </Link>
+                <Link
+                  href={`/admin/boards/${boardId}/discussions/${d.id}`}
+                  className="text-xs text-muted-foreground underline underline-offset-4"
+                >
+                  edit
                 </Link>
               </li>
             ))}

@@ -56,18 +56,21 @@ export type Database = {
         Row: {
           board_id: string
           created_at: string
+          description: string | null
           id: string
           title: string
         }
         Insert: {
           board_id: string
           created_at?: string
+          description?: string | null
           id?: string
           title: string
         }
         Update: {
           board_id?: string
           created_at?: string
+          description?: string | null
           id?: string
           title?: string
         }

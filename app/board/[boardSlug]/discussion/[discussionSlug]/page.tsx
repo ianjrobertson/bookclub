@@ -39,6 +39,12 @@ export default async function Page({
         <div>{board.name}: {discussion.title}</div>
         {handle && <span className="text-sm text-muted-foreground">Commenting as <strong>{handle}</strong></span>}
       </div>
+      {discussion.description && (
+        <div className="rounded border p-4 text-sm bg-muted/40">
+          <p className="font-medium mb-1">Starter prompt</p>
+          <p className="text-muted-foreground whitespace-pre-wrap">{discussion.description}</p>
+        </div>
+      )}
       <div className="flex flex-col">
         {posts.map((post) => (
           <Post key={post.id} node={post} boardId={boardSlug} />
