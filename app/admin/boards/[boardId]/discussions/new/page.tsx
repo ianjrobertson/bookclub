@@ -18,6 +18,16 @@ export default async function NewDiscussionPage({
           <Label htmlFor="title">Title</Label>
           <Input id="title" name="title" required />
         </div>
+        <div className="space-y-2">
+          <Label htmlFor="description">Starter prompt (optional)</Label>
+          <textarea
+            id="description"
+            name="description"
+            rows={4}
+            placeholder="What should members focus on?"
+            className="border rounded px-3 py-2 text-sm w-full resize-none"
+          />
+        </div>
         <Button type="submit">Create discussion</Button>
       </form>
     </div>
