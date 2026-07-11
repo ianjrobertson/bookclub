@@ -40,14 +40,17 @@ export async function updateDiscussion(discussionId: string, boardId: string, fo
   redirect(`/admin/boards/${boardId}`);
 }
 
-export async function deleteDiscussion(discussionId: string, boardId: string) {
+export async function deleteBoard(boardId: string) {
   const supabase = await createClient();
   const { error } = await supabase
-    .from("discussions")
+    .from("boards")
     .delete()
-    .eq("id", discussionId);
-  if (error) throw new Error(error.message);
-  redirect(`/admin/boards/${boardId}`);
+    .eq("id", boardId);
+  if (error) {
+    console.log(error)
+    throw new Error(error.message);
+  }
+  redirect(`/admin`);
 }
 
 export async function generateInviteLink(boardId: string) {

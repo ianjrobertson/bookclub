@@ -4,7 +4,7 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { getBoard, getDiscussions } from "@/lib/data";
 import { Button } from "@/components/ui/button";
-import { generateInviteLink } from "@/app/admin/actions";
+import { deleteBoard, generateInviteLink } from "@/app/admin/actions";
 import { CopyInviteButton } from "./copy-invite-button";
 
 export default async function BoardAdminPage({
@@ -27,10 +27,10 @@ export default async function BoardAdminPage({
   return (
     <div className="max-w-2xl space-y-8">
       <Link href="/admin" className="text-sm underline underline-offset-4">
-          ← All boards
+          ← All books
         </Link>
       <div className="flex flex-col space-y-2">
-        <h2 className="text-lg font-medium">Board: {board.name}</h2>
+        <h2 className="text-lg font-medium">Book: {board.name}</h2>
       </div>
       <section className="space-y-4">
         <h3 className="font-medium">Invite link</h3>
@@ -78,6 +78,11 @@ export default async function BoardAdminPage({
             ))}
           </ul>
         )}
+      </section>
+      <section className="space-y-4">
+        <form action={deleteBoard.bind(null, boardId)}>
+          <Button variant="destructive" type="submit">Delete</Button>
+        </form>
       </section>
     </div>
   );
