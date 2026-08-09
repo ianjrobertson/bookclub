@@ -7,6 +7,11 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.1"
+  }
   graphql_public: {
     Tables: {
       [_ in never]: never
@@ -36,19 +41,28 @@ export type Database = {
     Tables: {
       boards: {
         Row: {
+          cover_image_path: string | null
           created_at: string
+          description: string | null
           id: string
           name: string
+          slug: string
         }
         Insert: {
+          cover_image_path?: string | null
           created_at?: string
+          description?: string | null
           id?: string
           name: string
+          slug: string
         }
         Update: {
+          cover_image_path?: string | null
           created_at?: string
+          description?: string | null
           id?: string
           name?: string
+          slug?: string
         }
         Relationships: []
       }
@@ -58,6 +72,10 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          pinned: boolean
+          position: number
+          scheduled_date: string | null
+          slug: string
           title: string
         }
         Insert: {
@@ -65,6 +83,10 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          pinned?: boolean
+          position: number
+          scheduled_date?: string | null
+          slug: string
           title: string
         }
         Update: {
@@ -72,6 +94,10 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          pinned?: boolean
+          position?: number
+          scheduled_date?: string | null
+          slug?: string
           title?: string
         }
         Relationships: [
@@ -88,27 +114,33 @@ export type Database = {
         Row: {
           content: string
           created_at: string
+          deleted_at: string | null
           discussion_id: string
           id: string
           parent_id: string | null
+          updated_at: string | null
           user_handle: string
           user_id: string
         }
         Insert: {
           content: string
           created_at?: string
+          deleted_at?: string | null
           discussion_id: string
           id?: string
           parent_id?: string | null
+          updated_at?: string | null
           user_handle: string
           user_id: string
         }
         Update: {
           content?: string
           created_at?: string
+          deleted_at?: string | null
           discussion_id?: string
           id?: string
           parent_id?: string | null
+          updated_at?: string | null
           user_handle?: string
           user_id?: string
         }
@@ -270,4 +302,3 @@ export const Constants = {
     Enums: {},
   },
 } as const
-
